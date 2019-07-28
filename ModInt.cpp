@@ -1,178 +1,90 @@
-template<int mod> struct ModInt {
+namespace mylib {
+template<int mod>
+struct ModInt {
 	using ll = long long;
 	int x;
-	template<class T>
-	ModInt(T a) {
-		x = a % mod;
-		if (x < 0) {
-			x += mod;
-		}
-	}
-	ModInt() : x(0) {}
-	inline ModInt& operator+=(const ModInt& rhs)
-	{
-		(*this) += rhs.x;
-		return *this;
-	}
-	template<class T>
-	inline ModInt& operator+=(const T rhs)
-	{
-		x += rhs % mod;
+	const static int M = mod;
+	ModInt(ll x_) {
+		x = x_ % mod;
 		if (x < 0) x += mod;
+	}
+	ModInt() : ModInt(0) {}
+	inline ModInt& operator+=(const ModInt rhs) {
+		x += rhs.x;
 		x %= mod;
+		return (*this);
+	}
+	inline ModInt& operator-=(const ModInt rhs) {
+		x += -rhs;
 		return *this;
 	}
-	inline ModInt& operator-=(const ModInt& rhs)
-	{
-		(*this) -= rhs.x;
+	inline ModInt& operator*=(const ModInt rhs) {
+		x = ((ll) x * rhs.x) % mod;
 		return *this;
 	}
-	template<class T>
-	inline ModInt& operator-=(const T rhs)
-	{
-		x -= rhs % mod;
-		if (x < 0) x += mod;
-		x %= mod;
+	inline ModInt& operator/=(ModInt rhs) {
+		return *this *= rhs.power(mod - 2);
+	}
+	inline ModInt power(ll p) {
+		ModInt res = 1;
+		ModInt a = x;
+		for (; p; res = p & 1 ? res * a : res, a *= a, p >>= 1);
+		return res;
+	}
+	inline ModInt& operator=(const ModInt& rhs) {
+		this->x = rhs.x;
 		return *this;
 	}
-	inline ModInt& operator*=(const ModInt& rhs)
-	{
-		(*this) *= rhs.x;
-		return *this;
+	inline int operator==(const ModInt& rhs) const {
+		return this->x == rhs.x;
 	}
-	template<class T>
-	inline ModInt& operator*=(const T rhs)
-	{
-		ll res = (ll) x * (rhs % mod);
-		x = res % mod;
-		if (x < 0) x += mod;
-		return *this;
+	inline int operator!=(const ModInt& rhs) const {
+		return !(*this != rhs);
 	}
-	inline ModInt& operator/=(const ModInt& rhs)
-	{
-		(*this) /= rhs.x;
-		return *this;
-	}
-	template<class T>
-	inline ModInt& operator/=(const T rhs)
-	{
-		int t = rhs % mod;
-		if (t < 0) t += mod;
-		ll res = modpow(t);
-		(*this) *= res;
-		return *this;
-	}
-	inline ModInt& operator=(const ModInt& rhs)
-	{
-		(*this) = rhs.x;
-		return *this;
-	}
-	template<class T>
-	inline ModInt& operator=(const T rhs)
-	{
-		x = rhs % mod;
-		if (x < 0) x += mod;
-		return *this;
-	}
-	inline int operator==(const ModInt& rhs) const
-	{
-		return (*this) == rhs.x;
-	}
-	template<class T>
-	inline int operator==(const T rhs) const
-	{
-		ModInt t(rhs);
-		return (*this).x == t.x;
-	}
-	inline int operator!=(const ModInt& rhs) const
-	{
-		return (*this) != rhs.x;
-	}
-	inline int operator!=(const int rhs) const
-	{
-		ModInt t(rhs);
-		return (*this).x != t.x;
-	}
-	inline ModInt operator++(signed unused)
-	{
-		ModInt res((*this).x);
+	inline ModInt operator++(signed unused) {
+		ModInt res(*this);
 		++(*this);
 		return res;
 	}
-	inline ModInt& operator++()
-	{
+	inline ModInt& operator++() {
 		(*this) += 1;
 		return (*this);
 	}
-	inline ModInt operator--(signed unused)
-	{
-		ModInt res((*this).x);
+	inline ModInt operator--(signed unused) {
+		ModInt res(*this);
 		--(*this);
 		return res;
 	}
-	inline ModInt& operator--()
-	{
+	inline ModInt& operator--() {
 		(*this) -= 1;
 		return (*this);
 	}
-	inline ModInt operator+() const
-	{
+	inline ModInt operator+() const {
 		return (*this);
 	}
-	inline ModInt operator-() const
-	{
+	inline ModInt operator-() const {
 		return (*this).x ? ModInt(mod - (*this).x) : ModInt(0);
 	}
-	template<class T>
-	int modpow(const T val, int p = mod - 2)
-	{
-		if (p == 0) return 1;
-		if (p % 2) return (long long) val * modpow(val, p-1) % mod;
-		long long t = modpow(val, p/2);
-		int res = t * t % mod;
-		return res;
-	}
-	operator int() const
-	{
-		return x;
-	}
-	friend ostream& operator<<(ostream& lhs, const ModInt& rhs)
-	{
+	friend const ModInt operator+(const ModInt& lhs, const ModInt& rhs) {return ModInt(lhs) += rhs;}
+	friend const ModInt operator-(const ModInt& lhs, const ModInt& rhs) {return ModInt(lhs) -= rhs;}
+	friend const ModInt operator*(const ModInt& lhs, const ModInt& rhs) {return ModInt(lhs) *= rhs;}
+	friend const ModInt operator/(const ModInt& lhs, const ModInt& rhs) {return ModInt(lhs) /= rhs;}
+	explicit operator int() const {return x;}
+	friend ostream& operator<<(ostream& lhs, const ModInt& rhs) {
 		lhs << rhs.x;
 		return lhs;
 	}
-	friend istream& operator>>(istream& lhs, ModInt& rhs)
-	{
+	friend istream& operator>>(istream& lhs, ModInt& rhs) {
 		long long t;
 		lhs >> t;
-		rhs.x = t % mod;
-		if (rhs.x < 0) rhs += mod;
+		rhs = ModInt(t);
 		return lhs;
 	}
-	friend const ModInt operator+(const ModInt& lhs, const ModInt& rhs)  {return ModInt(lhs) += rhs;}
-	template<class T>
-	friend const ModInt operator+(const ModInt& lhs, const T rhs)        {return ModInt(lhs) += rhs;}
-	template<class T>
-	friend const ModInt operator+(T lhs, const ModInt& rhs)              {return ModInt(lhs) += rhs;}
-	friend const ModInt operator-(const ModInt& lhs, const ModInt& rhs)  {return ModInt(lhs) -= rhs;}
-	template<class T>
-	friend const ModInt operator-(const ModInt& lhs, const T rhs)        {return ModInt(lhs) -= rhs;}
-	template<class T>
-	friend const ModInt operator-(T lhs, const ModInt& rhs)              {return ModInt(lhs) -= rhs;}
-	friend const ModInt operator*(const ModInt& lhs, const ModInt& rhs)  {return ModInt(lhs) *= rhs;}
-	template<class T>
-	friend const ModInt operator*(const ModInt& lhs, const T rhs)        {return ModInt(lhs) *= rhs;}
-	template<class T>
-	friend const ModInt operator*(T lhs, const ModInt& rhs)              {return ModInt(lhs) *= rhs;}
-	friend const ModInt operator/(const ModInt& lhs, const ModInt& rhs)  {return ModInt(lhs) /= rhs;}
-	template<class T>
-	friend const ModInt operator/(const ModInt& lhs, const T rhs)        {return ModInt(lhs) /= rhs;}
-	template<class T>
-	friend const ModInt operator/(T lhs, const ModInt& rhs)              {return ModInt(lhs) /= rhs;}
-	template<class T>
-	friend const int    operator==(T lhs, const ModInt& rhs)             {return ModInt(lhs) == rhs;}
-	template<class T>
-	friend const int    operator!=(T lhs, const ModInt& rhs)             {return ModInt(lhs) != rhs;}
 };
 using modint = ModInt<1000000007>;
 //using modint = ModInt<998244353>;
+modint operator"" _mi(unsigned long long lit) {
+	return modint(lit % modint::M);
+}
+}; // mylib
+using namespace mylib;
