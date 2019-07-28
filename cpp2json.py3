@@ -25,7 +25,10 @@ try:
 		src_dict['prefix'] = source_name[:-4]
 		body = []
 		for line in src:
-			body.append(line[:-1])
+			if line[-1] == '\n':
+				body.append(line[:-1])
+			else:
+				body.append(line[:])
 		src_dict['body'] = body
 		print(source_name[:-4])
 		result[source_name[:-4]] = src_dict
