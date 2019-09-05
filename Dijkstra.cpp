@@ -40,23 +40,22 @@ struct Edge
 using edge = Edge<dijkstra_cost>;
 using graph = Graph<vertex, edge>;
 
-template<class V, class E>
-void Dijkstra(Graph<V, E>& G, int s, dijkstra_cost INF_COST)
-{
-	auto &v = G.v;
-	auto &e = G.e;
-	for (auto& vv : v) vv.cost = INF_COST;
-	using Q_T = pair<dijkstra_cost, int>;
-	priority_queue<Q_T, vector<Q_T>, greater<>> q;
-	q.emplace(0, s);
-	while (!q.empty()) {
-		auto a = q.top();
-		q.pop();
-		if (a.first >= v[a.second].cost) continue;
-		v[a.second].cost = a.first;
-		for (auto& p : e[a.second]) {
-			if (p.cost == INF_COST) continue;
-			if (a.first + p.cost < v[p.to].cost) q.emplace(a.first + p.cost, p.to);
+struct Dijkstra : public graph {
+	Dijkstra(int n) : graph(n) {}
+	void Dijkstra_solve(int s, dijkstra_cost INF_COST) {
+		for (auto& vv : v) vv.cost = INF_COST;
+		using Q_T = pair<dijkstra_cost, int>;
+		priority_queue<Q_T, vector<Q_T>, greater<>> q;
+		q.emplace(0, s);
+		while (!q.empty()) {
+			auto a = q.top();
+			q.pop();
+			if (a.first >= v[a.second].cost) continue;
+			v[a.second].cost = a.first;
+			for (auto& p : e[a.second]) {
+				if (p.cost == INF_COST) continue;
+				if (a.first + p.cost < v[p.to].cost) q.emplace(a.first + p.cost, p.to);
+			}
 		}
 	}
-}
+};

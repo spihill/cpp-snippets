@@ -1,28 +1,58 @@
-template<class T>
-// O(|E||V|^2)
-struct Dinic {
-	const T FLOW_INF = INT_MAX;
-	edges v;
+template<class V, class E>
+struct Graph
+{
+	int sz;
+	vector<V> v;
+	vector<vector<E>> e;
+	Graph(int n) : sz(n), v(n), e(n) {}
+	template<class... Args>
+	inline void assign_vertex(int pos, Args... args) {
+		v[pos] = V(args...);
+	}
+	// from, to, cost
+	template<class... Args>
+	inline void add_edge(int pos, Args... args) {
+		e[pos].emplace_back(args...);
+	}
+	inline int size() {
+		return sz;
+	}
+};
+
+struct Vertex{};
+using vertex = Vertex;
+
+struct Edge
+{
+	int to;
+	int cap;
+	int rev;
+	Edge(int x, int y, int z) : to(x), cap(y), rev(z) {}
+};
+
+using edge = Edge;
+using graph = Graph<vertex, edge>;
+
+struct Dinic : public graph {
+	const int FLOW_INF = INT_MAX;
 	vector<int> level;
 	vector<int> iter;
 // a:Vertex(|V|)
-	Dinic(int a) : level(a), iter(a) {
-		v.init(a);
-	}
+	Dinic(int n) : graph(n), level(n), iter(n) {}
 // x:from y:to z:capacity
-	void add_edge(int x, int y, T z) {
-		v.add_edge(edge(x, y, z, v[y].size()));
-		v.add_edge(edge(y, x, 0, v[x].size()-1));
+	void add_edge_dinic(int x, int y, int z) {
+		add_edge(x, y, z, e[y].size());
+		add_edge(y, x, 0, e[x].size()-1);
 	}
-	T dfs(int s, int t, T f) {
+	int dfs(int s, int t, int f) {
 		if (s == t) return f;
-		for (int& i = iter[s]; i < (int) v[s].size(); i++) {
-			auto& x = v[s][i];
+		for (int& i = iter[s]; i < (int) e[s].size(); i++) {
+			auto& x = e[s][i];
 			if (x.cap == 0 || level[s] >= level[x.to]) continue;
-			T d;
+			int d;
 			if ((d = dfs(x.to, t, min(f, x.cap))) > 0) {
 				x.cap -= d;
-				v[x.to][x.rev].cap += d;
+				e[x.to][x.rev].cap += d;
 				return d;
 			}
 		}
@@ -39,18 +69,18 @@ struct Dinic {
 			int b = x.second;
 			if (level[a] != -1) continue;
 			level[a] = b;
-			for (auto y : v[a]) {
+			for (auto y : e[a]) {
 				if (y.cap > 0) q.push(make_pair(y.to, b+1));
 			}
 		}
 	}
-	T calc(int s, int t) {
-		T res = 0;
+	int Dinic_solve(int s, int t) {
+		int res = 0;
 		while (true){
 			bfs(s);
 			if (level[t] < 0) return res;
 			fill(iter.begin(), iter.end(), 0);
-			T r;
+			int r;
 			do {
 				r = dfs(s, t, FLOW_INF);
 				res += r;
