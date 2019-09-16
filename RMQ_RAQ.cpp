@@ -1,4 +1,7 @@
 /*
+	UNITY_NODE minの単位元
+	UNITY_LAZY addの単位元
+	nodeの初期値に注意(init)
 */
 template <class NODE, class LAZY, NODE UNITY_NODE, LAZY UNITY_LAZY>
 struct LazySegTree {

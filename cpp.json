@@ -91,6 +91,9 @@
 		"prefix": "RMQ_RAQ",
 		"body": [
 			"/*",
+			"\tUNITY_NODE min\u306e\u5358\u4f4d\u5143",
+			"\tUNITY_LAZY add\u306e\u5358\u4f4d\u5143",
+			"\tnode\u306e\u521d\u671f\u5024\u306b\u6ce8\u610f(init)",
 			"*/",
 			"template <class NODE, class LAZY, NODE UNITY_NODE, LAZY UNITY_LAZY>",
 			"struct LazySegTree {",
