@@ -4,6 +4,8 @@ files='files.txt'
 user='spihill'
 repo='library'
 
+rm ./*.cpp
+
 if [ -z "$MY_GITHUB_SOURCE_TOKEN" ]; then
 	   echo "Please set MY_GITHUB_SOURCE_TOKEN"
 	   exit 1

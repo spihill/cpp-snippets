@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import json
 import collections as cl
 import glob
@@ -12,6 +13,7 @@ def source_load(name):
 	except Exception as e:
 		print(e)
 		src.close()
+		exit(1)
 		
 
 try:
@@ -20,6 +22,7 @@ try:
 	result = {}
 
 	for source_name in sources:
+		print(source_name[:-4])
 		src = source_load(source_name)
 		src_dict = {}
 		src_dict['prefix'] = source_name[:-4]
@@ -30,12 +33,12 @@ try:
 			else:
 				body.append(line[:])
 		src_dict['body'] = body
-		print(source_name[:-4])
 		result[source_name[:-4]] = src_dict
 		src.close()
 
 	json.dump(result,target,indent='\t')
 except Exception as e:
 	print(e)
+	exit(1)
 finally:
 	target.close()
