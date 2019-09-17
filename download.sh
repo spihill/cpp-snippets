@@ -4,15 +4,15 @@ files='files.txt'
 user='spihill'
 repo='library'
 
-rm ./*.cpp
-
 if [ -z "$MY_GITHUB_SOURCE_TOKEN" ]; then
 	   echo "Please set MY_GITHUB_SOURCE_TOKEN"
 	   exit 1
 fi
 
+rm ./*.cpp
+
 	echo "Downloading $files"
- 	curl -s -S -O -H "Authorization: token $MY_GITHUB_SOURCE_TOKEN" -H 'Accept: application/vnd.github.v3.raw' -L https://api.github.com/repos/$user/$repo/contents/$files
+ 	curl -s -S -O -H "Authorization: token $MY_GITHUB_SOURCE_TOKEN" -H 'Accept: application/vnd.github.v3.raw' -L https://api.github.com/repos/$user/$repo/contents/.github/myscript/$files
 
 tmp=.cpplib.tmp
 tail -n +2 $files > $tmp
