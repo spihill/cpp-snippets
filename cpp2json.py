@@ -2,13 +2,14 @@
 import json
 import collections as cl
 import glob
+import codecs
 
 target_name = "cpp.json"
 
 
 def source_load(name):
 	try:
-		src = open(name, 'r')
+		src = codecs.open(name, 'r', 'utf-8')
 		return src
 	except Exception as e:
 		print(e)
@@ -17,7 +18,7 @@ def source_load(name):
 		
 
 try:
-	target = open(target_name, 'w')
+	target = codecs.open(target_name, 'w', 'utf-8')
 	sources = glob.glob("*.cpp")
 	result = {}
 

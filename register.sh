@@ -5,4 +5,4 @@ if [ -z "$VSCODE_SNIPPETS_DIR" ]; then
 	exit 1
 fi
 
-python3 cpp2json.py3 && cp -i cpp.json $VSCODE_SNIPPETS_DIR
+python3 cpp2json.py && cp -i cpp.json $VSCODE_SNIPPETS_DIR
